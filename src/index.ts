@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 import { transactionRoutes } from './routes/transactions';
+import { bulkRoutes } from './routes/bulk';
 import { errorHandler } from './middleware/errorHandler';
 import { connectRedis } from './config/redis';
 import { globalTimeout, haltOnTimedout, timeoutErrorHandler } from './middleware/timeout';
@@ -33,6 +34,7 @@ app.get('/health', (req, res) => {
 });
 
 app.use('/api/transactions', transactionRoutes);
+app.use('/api/transactions/bulk', bulkRoutes);
 
 // Timeout error handler (must be before general error handler)
 app.use(timeoutErrorHandler);
