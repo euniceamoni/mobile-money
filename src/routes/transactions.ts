@@ -1,8 +1,12 @@
 import { Router } from 'express';
 import { depositHandler, withdrawHandler, getTransactionHandler } from '../controllers/transactionController';
+import { TimeoutPresets, customTimeout, haltOnTimedout } from '../middleware/timeout';
 
 export const transactionRoutes = Router();
 
-transactionRoutes.post('/deposit', depositHandler);
-transactionRoutes.post('/withdraw', withdrawHandler);
-transactionRoutes.get('/:id', getTransactionHandler);
+// Deposit and withdraw operations may take longer due to external API calls
+transactionRoutes.post('/deposit', TimeoutPresets.long, haltOnTimedout, depositHandler);
+transactionRoutes.post('/withdraw', TimeoutPresets.long, haltOnTimedout, withdrawHandler);
+
+// Quick read operation
+transactionRoutes.get('/:id', TimeoutPresets.quick, haltOnTimedout, getTransactionHandler);
