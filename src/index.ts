@@ -50,6 +50,10 @@ import { HealthCheckResponse, ReadinessCheckResponse } from "./types/api";
 
 dotenv.config();
 
+// Validate Stellar network configuration
+validateStellarNetwork();
+logStellarNetwork();
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
