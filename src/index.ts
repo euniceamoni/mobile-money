@@ -24,6 +24,7 @@ import {
   vaultRoutesV1,
 } from "./routes/v1";
 import { transactionRoutes } from "./routes/transactions";
+import { authRoutes } from "./routes/auth";
 import { bulkRoutes } from "./routes/bulk";
 import { transactionDisputeRoutes, disputeRoutes } from "./routes/disputes";
 import { statsRoutes } from "./routes/stats";
@@ -32,6 +33,7 @@ import { reportsRoutes } from "./routes/reports";
 import { createKYCRoutes } from "./routes/kycRoutes";
 import { vaultRoutes } from "./routes/vaults";
 import { adminRoutes } from "./routes/admin";
+import { makerCheckerRoutes } from "./routes/makerChecker";
 import { errorHandler } from "./middleware/errorHandler";
 import {
   connectRedis,
@@ -195,6 +197,7 @@ app.use(validateVersionMiddleware);
 app.use("/oauth", createOAuthRouter());
 
 app.use("/api/v1/transactions", transactionRoutesV1);
+app.use("/api/auth", authRoutes);
 app.use("/api/v1/transactions", transactionDisputeRoutesV1);
 app.use("/api/v1/transactions/bulk", bulkRoutesV1);
 app.use("/api/v1/disputes", disputeRoutesV1);
@@ -226,6 +229,7 @@ app.use("/api/contacts", contactsRoutes);
 app.use("/api/reports", reportsRoutes);
 app.use("/api/kyc", createKYCRoutes(pool));
 app.use("/api/admin", requireAuth, adminRoutes);
+app.use("/api/admin", requireAuth, makerCheckerRoutes);
 app.use("/sep31", sep31Router);
 
 // SEP-24 Interactive Deposit/Withdrawal Flow
