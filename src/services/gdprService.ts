@@ -63,7 +63,7 @@ export class GDPRService {
       ...tx,
       phoneNumber: this.hashString(tx.phoneNumber),
       idempotencyKey: this.hashString(String(tx.idempotencyKey)),
-      b: this.hashString(tx.stellarAddress),
+      stellarAddress: this.hashString(tx.stellarAddress),
     };
   }
 
