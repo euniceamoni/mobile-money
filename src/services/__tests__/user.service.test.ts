@@ -61,5 +61,28 @@ describe("deactivateUserAccount", () => {
       expect(mockClient.query).toHaveBeenCalledTimes(3);
       expect(mockClient.release).toHaveBeenCalled();
     });
+
+    it("should set is_active to false and deactivated_at timestamp", async () => {
+      const userId = "user-789";
+
+      (pool.query as jest.Mock).mockResolvedValueOnce({
+        rows: [{ id: userId }],
+        rowCount: 1,
+      });
+
+      mockClient.query
+        .mockResolvedValueOnce(undefined) // BEGIN
+        .mockResolvedValueOnce({ rowCount: 1 }) // users UPDATE
+        .mockResolvedValueOnce(undefined); // COMMIT
+
+      await deactivateUserAccount(userId);
+
+      const userUpdateCall = mockClient.query.mock.calls;
+      const query = userUpdateCall[1][0];
+
+      expect(query).toContain("UPDATE users");
+      expect(query).toContain("is_active = false");
+      expect(query).toContain("deactivated_at = CURRENT_TIMESTAMP");
+    });
   });
 });
