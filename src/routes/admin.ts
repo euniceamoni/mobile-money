@@ -771,3 +771,5 @@ router.get(
   },
 );
 
+export { router as adminRoutes };
+

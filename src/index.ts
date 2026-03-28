@@ -60,6 +60,7 @@ import { sessionAnomalyLogger } from "./services/logger";
 import { HealthCheckResponse, ReadinessCheckResponse } from "./types/api";
 import sep31Router from "./stellar/sep31";
 import sep24Router from "./stellar/sep24";
+import sep38Router from "./stellar/sep38";
 import { createSep12Router } from "./stellar/sep12";
 
 // 1. Import Sentry Middleware
@@ -251,6 +252,7 @@ app.use("/api/kyc", createKYCRoutes(pool));
 app.use("/api/admin", requireAuth, adminRoutes);
 app.use("/sep31", sep31Router);
 app.use("/sep24", sep24Router);
+app.use("/sep38", sep38Router);
 app.use("/sep12", createSep12Router(pool));
 
 app.use(
