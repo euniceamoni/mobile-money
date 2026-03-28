@@ -33,7 +33,9 @@ import { statsRoutes } from "./routes/stats";
 import { contactsRoutes } from "./routes/contacts";
 import { reportsRoutes } from "./routes/reports";
 import { createKYCRoutes } from "./routes/kycRoutes";
-import adminRoutes from "./routes/admin";
+import { vaultRoutes } from "./routes/vaults";
+import { adminRoutes } from "./routes/admin";
+import { userRoutes } from "./routes/users";
 import { authRoutes } from "./routes/auth";
 import { errorHandler } from "./middleware/errorHandler";
 import {
@@ -237,6 +239,7 @@ app.use("/api/disputes", disputeRoutes);
 app.use("/api/stats", statsRoutes);
 app.use("/api/contacts", contactsRoutes);
 app.use("/api/reports", reportsRoutes);
+app.use("/api/users", userRoutes);
 app.use("/api/kyc", createKYCRoutes(pool));
 
 // GDPR
