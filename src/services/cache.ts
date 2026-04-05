@@ -59,7 +59,8 @@ async function getFromCache(fullKey: string) {
   try {
     const raw = await redisClient.get(fullKey);
     if (!raw) return null;
-    return JSON.parse(raw);
+    const rawStr = typeof raw === 'string' ? raw : raw.toString();
+    return JSON.parse(rawStr);
   } catch (err) {
     // Swallow cache errors; caching is a best-effort optimisation
     console.warn("Cache: get error", err);

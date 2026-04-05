@@ -102,7 +102,8 @@ export async function getThirtyDayVolume(userId: string): Promise<number> {
   try {
     const cached = await redisClient.get(cacheKey);
     if (cached !== null) {
-      return parseFloat(cached);
+      const cachedStr = typeof cached === 'string' ? cached : cached.toString();
+      return parseFloat(cachedStr);
     }
   } catch {
     // Redis unavailable — fall through to DB query

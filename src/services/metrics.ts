@@ -80,7 +80,8 @@ export async function getTransactionResolutionPercentiles(
   // Try to get from cache first
   const cached = await redisClient.get(CACHE_KEYS.TRANSACTION_METRICS);
   if (cached) {
-    return JSON.parse(cached);
+    const cachedStr = typeof cached === 'string' ? cached : cached.toString();
+    return JSON.parse(cachedStr);
   }
 
   const query = `
@@ -157,7 +158,8 @@ export async function getTransactionResolutionTrends(
 ): Promise<ResolutionTrendData[]> {
   const cached = await redisClient.get(CACHE_KEYS.TRANSACTION_TREND);
   if (cached) {
-    return JSON.parse(cached);
+    const cachedStr = typeof cached === 'string' ? cached : cached.toString();
+    return JSON.parse(cachedStr);
   }
 
   const query = `
@@ -219,7 +221,8 @@ export async function getDisputeResolutionPercentiles(
 ): Promise<PercentileMetrics> {
   const cached = await redisClient.get(CACHE_KEYS.DISPUTE_METRICS);
   if (cached) {
-    return JSON.parse(cached);
+    const cachedStr = typeof cached === 'string' ? cached : cached.toString();
+    return JSON.parse(cachedStr);
   }
 
   const query = `
@@ -296,7 +299,8 @@ export async function getDisputeResolutionTrends(
 ): Promise<ResolutionTrendData[]> {
   const cached = await redisClient.get(CACHE_KEYS.DISPUTE_TREND);
   if (cached) {
-    return JSON.parse(cached);
+    const cachedStr = typeof cached === 'string' ? cached : cached.toString();
+    return JSON.parse(cachedStr);
   }
 
   const query = `

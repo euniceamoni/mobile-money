@@ -160,9 +160,10 @@ reportsRoutes.get(
           const cached = await redisClient.get(cacheKey);
           if (cached) {
             console.log(`Cache hit for ${cacheKey}`);
+            const cachedStr = typeof cached === 'string' ? cached : cached.toString();
             return format === 'csv' 
-              ? res.header('Content-Type', 'text/csv').send(cached)
-              : res.json(JSON.parse(cached));
+              ? res.header('Content-Type', 'text/csv').send(cachedStr)
+              : res.json(JSON.parse(cachedStr));
           }
         } catch (cacheError) {
           console.warn("Cache read failed:", cacheError);

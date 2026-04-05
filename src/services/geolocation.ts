@@ -72,7 +72,9 @@ async function cacheGet(key: string): Promise<LocationMetadata | null> {
   try {
     if (redisClient.isOpen) {
       const raw = await redisClient.get(key);
-      return raw ? (JSON.parse(raw) as LocationMetadata) : null;
+      if (!raw) return null;
+      const rawStr = typeof raw === 'string' ? raw : raw.toString();
+      return JSON.parse(rawStr) as LocationMetadata;
     }
   } catch {
     // fall through to memory cache

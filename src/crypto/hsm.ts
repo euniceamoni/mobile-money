@@ -218,7 +218,7 @@ export class KmsAsymmetricSigner implements TransactionSigner {
 
     const rawPublicKey = pubKeyBuffer.subarray(pubKeyBuffer.length - 32);
 
-    this._kp = Keypair.fromRawEd25519PublicKey(rawPublicKey);
+    this._kp = Keypair.fromPublicKey(rawPublicKey.toString('hex'));
     this._publicKey = this._kp.publicKey();
 
     return this._publicKey;
@@ -236,7 +236,7 @@ export class KmsAsymmetricSigner implements TransactionSigner {
           KeyId: this.keyId,
           Message: txHash,
           MessageType: "RAW",
-          SigningAlgorithm: "ED25519",
+          SigningAlgorithm: "ECDSA_SHA_256" as any,
         }),
       );
     } catch (err) {
@@ -249,7 +249,7 @@ export class KmsAsymmetricSigner implements TransactionSigner {
 
     const signature = Buffer.from(response.Signature);
     const hint = this._kp!.signatureHint();
-    const decoratedSignature = xdr.DecoratedSignature.newXdr(hint, signature);
+    const decoratedSignature = new xdr.DecoratedSignature({ hint, signature });
 
     return {
       decoratedSignature,
@@ -343,7 +343,7 @@ export class KmsEnvelopeSigner implements TransactionSigner {
     const signature = kp.sign(txHash);
     const hint = kp.signatureHint();
 
-    const decoratedSignature = xdr.DecoratedSignature.newXdr(hint, signature);
+    const decoratedSignature = new xdr.DecoratedSignature({ hint, signature });
 
     return {
       decoratedSignature,
@@ -550,7 +550,7 @@ export class LocalSigner implements TransactionSigner {
   async sign(txHash: Buffer): Promise<SignResult> {
     const signature = this.keypair.sign(txHash);
     const hint = this.keypair.signatureHint();
-    const decoratedSignature = xdr.DecoratedSignature.newXdr(hint, signature);
+    const decoratedSignature = new xdr.DecoratedSignature({ hint, signature });
     return { decoratedSignature, publicKey: this.publicKey };
   }
 

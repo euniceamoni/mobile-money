@@ -60,9 +60,10 @@ export function generateToken(
   payload: Omit<JWTPayload, "iat" | "exp">,
   options?: GenerateTokenOptions,
 ): string {
+  const expiresIn = options?.expiresIn ?? JWT_EXPIRES_IN;
   return jwt.sign(payload, getJwtSecret(), {
-    expiresIn: options?.expiresIn ?? JWT_EXPIRES_IN,
-  });
+    expiresIn: typeof expiresIn === 'string' ? expiresIn : expiresIn,
+  } as jwt.SignOptions);
 }
 
 /**
@@ -135,8 +136,8 @@ export async function verifyRefreshToken(token: string): Promise<RefreshTokenPay
   const dbToken = await refreshTokenFamilyModel.findByToken(token);
   if (!dbToken || dbToken.is_revoked) {
     // Revoke the whole family if reused
-    if (decoded.familyId) {
-      await refreshTokenFamilyModel.revokeFamily(decoded.familyId, decoded.userId);
+    if (decoded.familyId && decoded.userId) {
+      await refreshTokenFamilyModel.revokeFamily(decoded.familyId, decoded.userId, 'reuse_detected');
     }
     throw new Error("Refresh token reuse detected. All tokens in this chain are revoked. Please re-login.");
   }

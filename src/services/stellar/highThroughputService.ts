@@ -184,7 +184,7 @@ export async function submitPayment(
         return {
           hash: response.hash,
           ledger: response.ledger,
-          fee: response.fee_charged,
+          fee: parseInt(response.successful ? '100' : '0'),
         };
       }
     );
@@ -367,7 +367,7 @@ async function submitPaymentDirect(
       success: true,
       hash: response.hash,
       ledger: response.ledger,
-      fee: response.fee_charged,
+      fee: parseInt(response.successful ? '100' : '0'),
     };
   } catch (error: unknown) {
     const err = error as Error;
