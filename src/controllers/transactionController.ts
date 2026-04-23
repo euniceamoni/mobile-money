@@ -25,6 +25,8 @@ import {
   TransactionResponse,
 } from "../types/api";
 
+import { validatePhoneProviderMatch } from "../utils/phoneUtils";
+
 const IDEMPOTENCY_TTL_HOURS = Number(
   process.env.IDEMPOTENCY_KEY_TTL_HOURS || 24,
 );
@@ -69,7 +71,7 @@ export const transactionSchema = z.object({
     .string()
     .regex(/^\+?\d{10,15}$/, { message: "Invalid phone number format" }),
   provider: z.enum(["mtn", "airtel", "orange"], {
-    message: "Provider must be one of: mtn, airtel, orange",
+    message: "Provider must be mtn, airtel, or orange",
   }),
   stellarAddress: z
     .string()
@@ -362,6 +364,15 @@ async function processTransactionRequest(
       return res
         .status(400)
         .json({ error: "Amount must be a positive number" });
+    }
+
+    // Recipient Mobile Network Validation
+    const networkMatch = validatePhoneProviderMatch(phoneNumber, provider);
+    if (!networkMatch.valid) {
+      return res.status(400).json({
+        error: networkMatch.error,
+        code: "INVALID_NETWORK_FOR_PROVIDER",
+      });
     }
 
     const idempotencyKey = getIdempotencyKey(req);
